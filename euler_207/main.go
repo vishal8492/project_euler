@@ -1,4 +1,4 @@
-package main
+package euler_207
 
 import (
 	"fmt"
@@ -8,69 +8,53 @@ import (
 func main() {
 	var input int
 	fmt.Scanf("%d", &input)
-	var lms = make([]int, input)
-	var ms = make([]float64, input)
-
+	var lms []int
+	var a int
+	var b int
 	for i := 0; i < input; i++ {
-		//fmt.Printf("Inside scan")
-		var a int
-		var b int
 		fmt.Scanf("%d", &a)
 		fmt.Scanf("%d", &b)
-		ms[i] = float64(a) / float64(b)
+		lms = append(lms, getLeastM(a, b))
 	}
-	m := math.MaxInt32
-	//k := 2
 
-	/**
-4^t = 2^t  + k
-k starts from 1
-2^t starts from 3
-k<=m
- */
-	mtemp := 3
-	cnt := 0
-
-	for mtemp != m {
-		total := 1
-		perfect := 1
-		for l := 3; l <= m; l++ {
-			ktemp := l*l - l
-
-			if ktemp <= mtemp {
-				//check if log l is integer
-				base := math.Log2(float64(l))
-				if base == math.Trunc(base) {
-					perfect += 1
-				}
-				total += 1
-
-				for i, thresh := range ms {
-					if thresh > (float64(perfect) / float64(total)) {
-						if lms[i] == 0 {
-							lms[i] = mtemp
-							cnt += 1
-						}
-					}
-				}
-
-			} else {
-				break
-			}
-			if cnt == input {
-				break
-			}
-
-		}
-		//log.Printf("total:%v,perfect:%v", total, perfect)
-
-		mtemp += 1
-		if cnt == input {
-			break
-		}
-	}
+	//log.Printf("total:%v,perfect:%v", total, perfect)
 
 	for _, v := range lms {
 		fmt.Println(v)
 	}
+}
+func getLeastM(a int, b int) int {
+	m := math.MaxInt64
+
+	//k := 2
+	/**
+		4^t = 2^t  + k
+		k starts from 1
+		2^t starts from 3
+		k<=m
+ */
+	total := 1
+	perfect := 1
+	for l := 3; l <= m; l++ {
+		ktemp := l*l - l
+
+		if ktemp <= m {
+			//check if log l is integer
+			base := l & (l - 1)
+			if base == 0 {
+				perfect += 1
+				//	b+=b
+			}
+			total += 1
+
+			//a+=a
+
+			if (a * total) > (b * perfect) {
+				return ktemp
+			}
+
+		}
+
+	}
+	return -1
 }
